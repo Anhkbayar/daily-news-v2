@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { createNewsProvider, getRegisteredSources } from "./service/news/NewsFactory";
 import "./service/news/iKonNews";
 import "./service/news/NewsmnNews";
+import "./service/news/EguurNews";
+
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
