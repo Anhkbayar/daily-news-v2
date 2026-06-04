@@ -8,7 +8,15 @@ export class NewsmnNews implements News {
     async ingest(): Promise<Article[]> {
         console.log("Ingesting from Newsmn");
 
-        return [];
+        return [
+            {
+                title: 'Newsmn test',
+                link: 'https://news.mn/r/236584',
+                description: 'test',
+                pubDate: new Date(),
+                source: 'newsmn'
+            }
+        ];
     }
 }
 

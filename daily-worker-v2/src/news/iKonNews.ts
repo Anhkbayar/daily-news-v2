@@ -8,8 +8,16 @@ export class IkonNews implements News {
     async ingest(): Promise<Article[]> {
         console.log("Ingesting from Ikon");
 
-        return [];
+        return [
+            {
+                title: 'Ikon test',
+                link: 'https://ikon.mn/a/236584',
+                description: 'test',
+                pubDate: new Date(),
+                source: 'ikon'
+            }
+        ];
     }
 }
 
-registerNewsProvider('ikon', IkonNews);
+registerNewsProvider('ikonmn', IkonNews);
