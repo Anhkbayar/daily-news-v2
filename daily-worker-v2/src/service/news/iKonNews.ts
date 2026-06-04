@@ -1,6 +1,6 @@
 import { Article } from "../../types";
-import { News } from "./interface";
-import { registerNewsProvider } from "./newsFactory";
+import { News } from "./Interface";
+import { registerNewsProvider } from "./NewsFactory";
 import { XMLParser } from "fast-xml-parser";
 
 export class IkonNews implements News {

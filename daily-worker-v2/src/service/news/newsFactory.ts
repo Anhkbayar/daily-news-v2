@@ -1,4 +1,4 @@
-import { News } from "./interface";
+import { News } from "./Interface";
 
 type NewsConstructor = new () => News;
 

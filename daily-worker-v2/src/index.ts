@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { createNewsProvider, getRegisteredSources } from "./service/news/newsFactory";
+import { createNewsProvider, getRegisteredSources } from "./service/news/NewsFactory";
 import "./service/news/iKonNews";
 import "./service/news/NewsmnNews";
 
