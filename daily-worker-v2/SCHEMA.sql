@@ -1,0 +1,22 @@
+DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS summary;
+
+CREATE TABLE IF NOT EXISTS summary (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    summary TEXT NOT NULL,
+    status BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS articles (
+    link TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    pub_date TEXT NOT NULL,
+    source TEXT NOT NULL,
+    status BOOLEAN NOT NULL DEFAULT TRUE,
+    summary_id INTEGER NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (summary_id) REFERENCES summary(id)
+);
