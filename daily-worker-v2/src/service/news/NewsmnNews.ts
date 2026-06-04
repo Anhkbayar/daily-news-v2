@@ -1,12 +1,13 @@
-import { Article } from "../types";
+import { Article } from "../../types";
 import { News } from "./interface";
 import { registerNewsProvider } from "./newsFactory";
 
 export class NewsmnNews implements News {
     feedUrl = "https://news.mn/feed";
+    sourceName = "newsmn";
 
     async ingest(): Promise<Article[]> {
-        console.log("Ingesting from Newsmn");
+        console.log(`Ingesting from ${this.sourceName}`);
 
         return [
             {
@@ -14,7 +15,7 @@ export class NewsmnNews implements News {
                 link: 'https://news.mn/r/236584',
                 description: 'test',
                 pubDate: new Date(),
-                source: 'newsmn'
+                source: this.sourceName
             }
         ];
     }
