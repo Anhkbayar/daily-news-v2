@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { groupArticles } from "./service/ai/SemanticGroup";
+import { groupArticle } from "./service/ai/SemanticGroup";
 import { generateSummary } from "./service/ai/SummaryAI";
 import { removeDescriptions } from "./helpers";
 import { Article } from "./types";
@@ -43,7 +43,6 @@ const ingestAllSources = async () => {
 const handleIngest = async (env: CloudflareBindings) => {
   try {
     const results = await ingestAllSources();
-    console.log(results);
 
     const articles = results
       .filter(
@@ -59,7 +58,8 @@ const handleIngest = async (env: CloudflareBindings) => {
       .flatMap((result) => result.data);
 
     const removedDescriptions = removeDescriptions(articles);
-    const rankingResults = await groupArticles(removedDescriptions, env.AI);
+    const rankingResults = await groupArticle(removedDescriptions);
+    console.log("Ranking Results:", rankingResults);
     return new Response(
       JSON.stringify({ success: true, data: rankingResults }),
       {

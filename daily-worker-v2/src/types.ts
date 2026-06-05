@@ -20,8 +20,7 @@ export interface Source {
 
 export interface Ranked {
   rank: number;
-  category: string;
-  headline: string;
+  title: string;
   summary: string;
   sources: Source[];
 }

@@ -3,7 +3,7 @@ export const NewsStoriesSchema = {
   properties: {
     stories: {
       type: "array",
-      minItems: 1,
+      minItems: 5,
       maxItems: 5,
       items: {
         type: "object",
@@ -12,25 +12,21 @@ export const NewsStoriesSchema = {
             type: "integer",
             minimum: 1,
           },
-          category: { type: "string" },
-          headline: { type: "string" },
-          summary: { type: "string" },
-          sources: {
+          title: { type: "string" },
+          description: { type: "string" },
+          matched_article_id: {
             type: "array",
             minItems: 1,
             items: {
-              type: "object",
-              properties: {
-                portal: { type: "string" },
-                url: { type: "string", format: "uri" },
-              },
-              required: ["portal", "url"],
+              type: "integer",
             },
           },
         },
-        required: ["rank", "category", "headline", "summary", "sources"],
+        required: ["rank", "title", "description", "matched_article_id"],
+        additionalProperties: false,
       },
     },
   },
   required: ["stories"],
+  additionalProperties: false,
 };
