@@ -1,4 +1,8 @@
 import { Hono } from "hono";
+import { groupArticles } from "./service/ai/SemanticGroup";
+import { generateSummary } from "./service/ai/SummaryAI";
+import { removeDescriptions } from "./helpers";
+import { Article } from "./types";
 import {
   createNewsProvider,
   getRegisteredSources,
@@ -36,12 +40,32 @@ const ingestAllSources = async () => {
   return results;
 };
 
-const handleIngest = async () => {
+const handleIngest = async (env: CloudflareBindings) => {
   try {
     const results = await ingestAllSources();
-    return new Response(JSON.stringify({ success: true, data: results }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    console.log(results);
+
+    const articles = results
+      .filter(
+        (
+          result,
+        ): result is {
+          source: string;
+          success: true;
+          count: number;
+          data: Article[];
+        } => result.success === true && Array.isArray(result.data),
+      )
+      .flatMap((result) => result.data);
+
+    const removedDescriptions = removeDescriptions(articles);
+    const rankingResults = await groupArticles(removedDescriptions, env.AI);
+    return new Response(
+      JSON.stringify({ success: true, data: rankingResults }),
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   } catch (error: any) {
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
@@ -54,7 +78,7 @@ const handleIngest = async () => {
 };
 
 app.get("/ingest", async (c) => {
-  return handleIngest();
+  return handleIngest(c.env);
 });
 
 app.get("/ingest/:source", async (c) => {
@@ -70,8 +94,14 @@ app.get("/ingest/:source", async (c) => {
   }
 });
 
-addEventListener("scheduled", (event) => {
-  event.waitUntil(handleIngest());
-});
+export default {
+  fetch: app.fetch,
 
-export default app;
+  scheduled: async (
+    event: ScheduledEvent,
+    env: CloudflareBindings,
+    ctx: ExecutionContext,
+  ) => {
+    ctx.waitUntil(handleIngest(env));
+  },
+};
