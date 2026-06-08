@@ -59,9 +59,12 @@ const handleIngest = async (env: CloudflareBindings) => {
 
     const removedDescriptions = removeDescriptions(articles);
     const rankingResults = await groupArticle(removedDescriptions);
+    const firstRanked = rankingResults.stories.find((s: { rank: number }) => s.rank === 1);
+    console.log(firstRanked);
     console.log("Ranking Results:", rankingResults);
+    const summary = await generateSummary(firstRanked)
     return new Response(
-      JSON.stringify({ success: true, data: rankingResults }),
+      JSON.stringify({ success: true, data: summary }),
       {
         headers: { "Content-Type": "application/json" },
       },

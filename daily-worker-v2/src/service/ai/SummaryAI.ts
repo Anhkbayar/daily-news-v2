@@ -1,62 +1,69 @@
-import { Article } from "../../types";
+import { deepseek } from "./Deepseek";
+
+interface AiSummarySchema {
+  summary: string,
+  date: Date,
+}
 
 export async function generateSummary(
-  articles: Article[],
-  deepseekApiKey: string,
-): Promise<string> {
-  if (articles.length === 0) {
-    return "No articles available for summary.";
+  descriptions: string[],
+): Promise<AiSummarySchema> {
+  if (descriptions.length === 0) {
+    return { summary: "", date: new Date() };
   }
 
-  const articleDigest = articles
-    .map((article, i) => `[${i + 1}] ${article.title}`)
+  const articleDigest = descriptions
+    .map((description, i) => `[${i + 1}] ${description}`)
     .join("\n");
 
-  const prompt = `You are a professional news editor for a Mongolian daily news digest called "Mongolia Daily Flash".
-Below are today's news article titles and descriptions. Write a concise, engaging summary that a reader can finish in approximately 2 minutes (roughly 300-400 words).
+  const prompt = `Өнөөдрийн Монголын мэдээний тайлбаруудыг доор жагсаав.
 
-Rules:
-- Write in clear, professional English
-- Group related topics together naturally
-- Highlight the most important stories first
-- Do NOT use bullet points or numbered lists — write in flowing paragraphs
-- Do NOT include article numbers or source attributions in the summary
-- End with a brief closing line
+Даалгавар:
+Дээрх мэдээнүүдийг хамгийн чухал гэсэн хэсгүүдийг аваад, дараах дүрмийг баримтлан, 300–400 үгтэй (ойролцоогоор 2 минут унших) нэгэн төрлийн тойм бич.
 
----
+Дүрэм:
+- Зөвхөн Монгол хэлээр (Кирилл үсэг) бич.
+- Цэгтэй жагсаалт, дугаарлалт, харваас ашиглахгүй.
+- Өгүүллийн дугаар, эх сурвалжийг дурдахгүй.
+- Холбоотой сэдвүүдийг байгалийн жамаар нэгтгэ.
+- Төгсгөлд нь товч хаалтын өгүүлбэр оруулах.
+
+Мэдээний жагсаалт:
 ${articleDigest}
----
 
-Write the 2-minute read summary now in mongolian:`;
+Одоо дээрх дүрмийн дагуу 2 минутын тоймоо бич.`
 
   try {
-    const response = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${deepseekApiKey}`,
-      },
-      body: JSON.stringify({
-        model: "deepseek-v4-flash",
-        messages: [
-          {
-            role: "system",
-            content: "You are a professional news summarizer.",
-          },
-          { role: "user", content: prompt },
-        ],
-        max_tokens: 2000,
-        temperature: 0.4,
-      }),
-    });
+    const response = await deepseek.chat.completions.create({
+      model: "deepseek-v4-flash",
+      max_tokens: 8192,
 
-    if (response && typeof response === "object" && "response" in response) {
-      return (response as { response: string }).response.trim();
+      messages: [
+        {
+          role: "system",
+          content: `You are a professional news editor for "Mongolia Daily Flash", a trusted Mongolian news digest.`
+        },
+        {
+          role: "user",
+          content: prompt
+        },
+      ]
+
+    })
+
+
+    const content = response.choices[0]?.message?.content;
+
+    if (!content) {
+      throw new Error("No content in response");
     }
 
-    return "Summary generation failed — unexpected AI response format.";
+    return {
+      summary: content,
+      date: new Date()
+    };
   } catch (error) {
     console.error("AI summary generation failed:", error);
-    return `Summary could not be generated. ${articles.length} articles were collected.`;
+    return { summary: "", date: new Date() };
   }
 }

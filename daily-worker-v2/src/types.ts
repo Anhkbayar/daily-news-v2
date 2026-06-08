@@ -13,6 +13,10 @@ export interface DescriptionRemovedArticle {
   source: string;
 }
 
+export interface OnlyDescriptionArticle {
+  description: string;
+}
+
 export interface Source {
   portal: string;
   url: string;

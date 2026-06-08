@@ -1,16 +1,11 @@
-import OpenAI from "openai"; // 1. Import OpenAI package
 import {
   DescriptionRemovedArticle,
   StoriesResponse,
   Ranked,
   Source,
 } from "../../types";
+import { deepseek } from "./Deepseek";
 
-// 2. Initialize the DeepSeek Client
-const deepseek = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY, // Ensure this environment variable is set
-  baseURL: "https://api.deepseek.com",
-});
 
 interface AIGeneratedStory {
   rank: number;
@@ -68,7 +63,7 @@ ${articlesJsonText}
   try {
     const response = await deepseek.chat.completions.create({
       model: "deepseek-v4-flash",
-      max_tokens: 3000,
+      max_tokens: 8192,
 
       response_format: { type: "json_object" },
 
@@ -84,7 +79,6 @@ ${articlesJsonText}
 
     let aiResult: AISchemaResponse | null = null;
     const rawJson = response.choices[0]?.message?.content;
-    console.log(rawJson);
     if (rawJson) {
       try {
         const cleanedText = rawJson.replace(/^```json\s*|```$/g, "").trim();
@@ -122,7 +116,6 @@ ${articlesJsonText}
       };
     });
 
-    console.log("AI grouping results: ", finalizedStoried);
     return { stories: finalizedStoried };
   } catch (error) {
     console.error("AI grouping failed: ", error);
