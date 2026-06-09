@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { groupArticle } from "./service/ai/SemanticGroup";
 import { generateSummary } from "./service/ai/SummaryAI";
+import { getLatestIngest, saveToDatabaseHybrid } from "./service/db/Database";
 import { removeDescriptions } from "./helpers";
 import { Article } from "./types";
 import {
@@ -76,8 +77,10 @@ const handleIngest = async (env: CloudflareBindings) => {
 
     const firstRankedSummary = await generateSummary(topStorySources.map((source: any) => source.description));
 
+    const savedResults = await saveToDatabaseHybrid(env.daily_news_db, firstRankedSummary, rankingResults);
+
     return new Response(
-      JSON.stringify({ success: true, data: firstRankedSummary }),
+      JSON.stringify({ success: true, data: savedResults }),
       {
         headers: { "Content-Type": "application/json" },
       },
@@ -109,6 +112,16 @@ app.get("/ingest/:source", async (c) => {
     return c.json({ success: false, error: error.message }, 400);
   }
 });
+
+app.get("/datas", async (c) => {
+  try {
+    const data = await getLatestIngest(c.env.daily_news_db);
+    if (!data) return c.json({ data: null });
+    return c.json({ data });
+  } catch (e) {
+    return c.json({ error: "Failed to fetch data" }, 500);
+  }
+})
 
 export default {
   fetch: app.fetch,

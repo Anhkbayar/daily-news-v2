@@ -3,14 +3,31 @@ CREATE TABLE IF NOT EXISTS digest_run (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS digest_article(
-    link TEXT PRIMARY KEY,
-    run_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    link TEXT NOT NULL,
-    description TEXT,
-    source TEXT NOT NULL,
-    pub_date DATETIME NOT NULL,
-    FOREIGN KEY(run_id) REFERENCES digest_run(id)
+CREATE TABLE IF NOT EXISTS links (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id INTEGER NOT NULL,
+  ranked_id INTEGER NOT NULL,
+  link TEXT NOT NULL,
+  portal TEXT NOT NULL,
+
+  FOREIGN KEY(run_id) REFERENCES digest_run(id),
+  FOREIGN KEY(ranked_id) REFERENCES ranked(id)
+);
+
+CREATE TABLE IF NOT EXISTS ranked (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id INTEGER NOT NULL,
+  rank INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  summary TEXT,
+  FOREIGN KEY(run_id) REFERENCES digest_run(id)
+);
+
+CREATE TABLE IF NOT EXISTS top_summary(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id INTEGER NOT NULL,
+  summary TEXT NOT NULL,
+
+  FOREIGN KEY(run_id) REFERENCES digest_run(id)
 );
 

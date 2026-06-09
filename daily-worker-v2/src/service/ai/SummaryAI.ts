@@ -1,15 +1,10 @@
 import { deepseek } from "./Deepseek";
 
-interface AiSummarySchema {
-  summary: string,
-  date: Date,
-}
-
 export async function generateSummary(
   descriptions: string[],
-): Promise<AiSummarySchema> {
+): Promise<string> {
   if (descriptions.length === 0) {
-    return { summary: "", date: new Date() };
+    return "Description baihgui baina";
   }
 
   const articleDigest = descriptions
@@ -58,12 +53,9 @@ ${articleDigest}
       throw new Error("No content in response");
     }
 
-    return {
-      summary: content,
-      date: new Date()
-    };
+    return content;
   } catch (error) {
     console.error("AI summary generation failed:", error);
-    return { summary: "", date: new Date() };
+    return "Error: Summarization failed. Please try again later.";
   }
 }
