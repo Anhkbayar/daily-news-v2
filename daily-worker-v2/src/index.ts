@@ -60,11 +60,24 @@ const handleIngest = async (env: CloudflareBindings) => {
     const removedDescriptions = removeDescriptions(articles);
     const rankingResults = await groupArticle(removedDescriptions);
     const firstRanked = rankingResults.stories.find((s: { rank: number }) => s.rank === 1);
-    console.log(firstRanked);
-    console.log("Ranking Results:", rankingResults);
-    const summary = await generateSummary(firstRanked)
+
+    let topStorySources = [];
+
+    if (firstRanked) {
+      const descriptionMap = new Map<string, string>(
+        articles.map(article => [article.link, article.description])
+      );
+
+      topStorySources = firstRanked.sources.map((sourceObj: { url: string }) => ({
+        link: sourceObj.url,
+        description: descriptionMap.get(sourceObj.url) || "No Description found"
+      }));
+    }
+
+    const firstRankedSummary = await generateSummary(topStorySources.map((source: any) => source.description));
+
     return new Response(
-      JSON.stringify({ success: true, data: summary }),
+      JSON.stringify({ success: true, data: firstRankedSummary }),
       {
         headers: { "Content-Type": "application/json" },
       },
