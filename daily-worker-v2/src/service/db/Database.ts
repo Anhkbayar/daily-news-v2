@@ -1,6 +1,6 @@
 import { getLinksByRanked } from "./Links";
 import { getRankedByRun } from "./Ranked";
-import { getLatestRun } from "./runs";
+import { getLatestRun } from "./Runs";
 
 export const saveToDatabaseHybrid = async (
     db: D1Database,
