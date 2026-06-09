@@ -1,11 +1,13 @@
-import { deepseek } from "./Deepseek";
+import { getDeepseek } from "./Deepseek";
 
 export async function generateSummary(
   descriptions: string[],
+  env: { DEEPSEEK_API_KEY: string }
 ): Promise<string> {
   if (descriptions.length === 0) {
     return "Description baihgui baina";
   }
+  const deepseek = getDeepseek(env);
 
   const articleDigest = descriptions
     .map((description, i) => `[${i + 1}] ${description}`)

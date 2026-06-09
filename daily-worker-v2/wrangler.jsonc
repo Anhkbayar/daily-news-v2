@@ -15,7 +15,9 @@
     "enabled": true,
   },
   "upload_source_maps": true,
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "d1_databases": [
     {
       "binding": "daily_news_db",
@@ -24,12 +26,10 @@
       "remote": true,
     },
   ],
-  "ai": {
-    "binding": "AI",
-    "remote": true,
-  },
   "triggers": {
-    "crons": ["0 22 * * *"],
+    "crons": [
+      "0 22 * * *"
+    ],
   },
   /**
    * Smart Placement

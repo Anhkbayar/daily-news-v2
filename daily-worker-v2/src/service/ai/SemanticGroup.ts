@@ -4,7 +4,7 @@ import {
   Ranked,
   Source,
 } from "../../types";
-import { deepseek } from "./Deepseek";
+import { getDeepseek } from "./Deepseek";
 
 
 interface AIGeneratedStory {
@@ -20,10 +20,12 @@ interface AISchemaResponse {
 
 export async function groupArticle(
   articles: DescriptionRemovedArticle[],
+  env: { DEEPSEEK_API_KEY: string }
 ): Promise<any> {
   if (articles.length === 0) {
     return { stories: [] };
   }
+  const deepseek = getDeepseek(env);
 
   const articleMap = new Map<number, DescriptionRemovedArticle>();
   const simplifiedArticles = articles.map((article, index) => {

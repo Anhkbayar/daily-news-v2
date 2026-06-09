@@ -59,7 +59,7 @@ const handleIngest = async (env: CloudflareBindings) => {
       .flatMap((result) => result.data);
 
     const removedDescriptions = removeDescriptions(articles);
-    const rankingResults = await groupArticle(removedDescriptions);
+    const rankingResults = await groupArticle(removedDescriptions, env);
     const firstRanked = rankingResults.stories.find((s: { rank: number }) => s.rank === 1);
 
     let topStorySources = [];
@@ -75,7 +75,7 @@ const handleIngest = async (env: CloudflareBindings) => {
       }));
     }
 
-    const firstRankedSummary = await generateSummary(topStorySources.map((source: any) => source.description));
+    const firstRankedSummary = await generateSummary(topStorySources.map((source: any) => source.description), env);
 
     const savedResults = await saveToDatabaseHybrid(env.daily_news_db, firstRankedSummary, rankingResults);
 
