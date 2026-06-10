@@ -1,16 +1,21 @@
-export interface Article {
+export interface Source {
   link: string;
+  portal: string;
+}
+
+export interface Story {
+  id: number;
+  rank: number;
   title: string;
-  description: string;
-  pub_date: string;
-  source: string;
-  status: number;
-  summary_id: number;
-  created_at: string;
+  summary: string;
+  sources: Source[];
 }
 
 export interface DailyFeed {
-  summary: string;
-  date: string;
-  articles: Article[];
+  data: {
+    run_id: number;
+    created_at: string;
+    top_summary: string;
+    stories: Story[];
+  };
 }

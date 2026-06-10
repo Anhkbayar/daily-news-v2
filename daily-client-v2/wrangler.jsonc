@@ -16,6 +16,13 @@
 	"upload_source_maps": true,
 	"compatibility_flags": [
 		"nodejs_compat"
+	],
+	"services": [
+		{
+			"binding": "Client",
+			"service": "daily-worker-v2",
+			"remote": true,
+		}
 	]
 	/**
 	 * Smart Placement

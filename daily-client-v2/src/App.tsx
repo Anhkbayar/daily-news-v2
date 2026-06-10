@@ -27,15 +27,6 @@ function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(getInitialTheme);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
 
-  // Clean up speech synthesis on unmount
-  useEffect(() => {
-    return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
   // Sync theme with document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -114,9 +105,9 @@ function App() {
         {/* Main Content */}
         {!isLoading && !isError && feed && (
           <main>
-            <EditorialArticle summary={feed.summary} />
+            <EditorialArticle summary={feed.data.top_summary} />
 
-            <ArticlesList articles={feed.articles} />
+            <ArticlesList stories={feed.data.stories} />
           </main>
         )}
 

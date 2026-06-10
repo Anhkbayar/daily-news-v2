@@ -1,11 +1,11 @@
-import type { Article } from '../types';
+import type { Story } from '../types';
 import { ArticleCard } from './ArticleCard';
 
 interface ArticlesListProps {
-  articles: Article[];
+  stories: Story[];
 }
 
-export function ArticlesList({ articles }: ArticlesListProps) {
+export function ArticlesList({ stories }: ArticlesListProps) {
   return (
     <>
       <div className="section-divider">
@@ -15,8 +15,8 @@ export function ArticlesList({ articles }: ArticlesListProps) {
       </div>
 
       <section className="clusters-grid">
-        {articles.map((article, index) => (
-          <ArticleCard key={`${article.link}-${index}`} article={article} />
+        {stories.map((story) => (
+          <ArticleCard key={story.id} story={story} />
         ))}
       </section>
     </>

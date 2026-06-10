@@ -29,10 +29,10 @@ export function Masthead({ feed }: MastheadProps) {
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            {formatFeedDate(feed.date)}
+            {formatFeedDate(feed.data.created_at)}
           </span>
           <span className="meta-item">
-            {feed.articles.length} articles
+            {feed.data.stories.length} stories
           </span>
         </div>
       )}
